@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+message ChoosePosition {
+  int32 position = 1;
+  double e = 2;
+}
+enum Line {
+  row0 = 0;
+  row1 = 1;
+  row2 = 2;
+  column0 = 3;
+  column1 = 4;
+  column2 = 5;
+  from00 = 6;
+  from02 = 7;
+}
+
+message ChooseLine {
+  Line line = 1;
+  double e = 2;
+}
+
+message ChooseCache {
+  map<int32, ChoosePosition> positions = 1;
+  map<int32, ChooseLine> lines = 2;
+
+}
