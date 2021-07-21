@@ -24,37 +24,58 @@ class NumberMapWidget extends StatefulWidget {
 class NumberMapWidgetState extends State<NumberMapWidget> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     widget.controller._state = this;
   }
 
   void update() => setState(() {});
 
+  Widget pointWidget(int row, int column) {
+    final index = 3 * row + column;
+    return GestureDetector(
+      child: Container(
+          // margin: EdgeInsets.only(
+          //   right: column < 2 ? 10 : 0,
+          //   bottom: row < 2 ? 10 : 0,
+          // ),
+          color: index == widget.controller.selected
+              ? Colors.lightBlueAccent
+              : Colors.grey,
+          child: Center(
+            child: Text("1"),
+          )),
+      onTap: () => widget.controller.selected = index,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 290,
-      height: 290,
-      child: Stack(
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Column(
         children: List.generate(
-            9,
-            (index) => Positioned(
-                  child: GestureDetector(
-                    child: Container(
-                        color: index == widget.controller.selected
-                            ? Colors.lightBlueAccent
-                            : Colors.grey,
-                        width: 90,
-                        height: 90,
-                        child: Center(
-                          child: Text("1"),
-                        )),
-                    onTap: () => widget.controller.selected = index,
+          5,
+          (row) => row % 2 == 0
+              ? Expanded(
+                  child: Row(
+                    children: List.generate(
+                      5,
+                      (column) => column % 2 == 0
+                          ? Expanded(
+                              child: Center(
+                                child: pointWidget(row ~/ 2, column ~/ 2),
+                              ),
+                            )
+                          : SizedBox(
+                              width: 10,
+                            ),
+                    ),
                   ),
-                  left: 100 * (index % 3),
-                  top: 100 * (index ~/ 3).toDouble(),
-                )),
+                )
+              : SizedBox(
+                  height: 10,
+                ),
+        ),
       ),
     );
   }
