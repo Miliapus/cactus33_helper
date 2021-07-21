@@ -33,8 +33,9 @@ class NumberMapWidgetState extends State<NumberMapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1,
+    return Container(
+      width: 290,
+      height: 290,
       child: Stack(
         children: List.generate(
             9,
@@ -56,28 +57,5 @@ class NumberMapWidgetState extends State<NumberMapWidget> {
                 )),
       ),
     );
-    //   width: 290,
-    //   height: 290,
-    //   child: Stack(
-    //     children: List.generate(
-    //         9,
-    //         (index) => Positioned(
-    //               child: GestureDetector(
-    //                 child: Container(
-    //                     color: index == widget.controller.selected
-    //                         ? Colors.lightBlueAccent
-    //                         : Colors.grey,
-    //                     width: 90,
-    //                     height: 90,
-    //                     child: Center(
-    //                       child: Text("1"),
-    //                     )),
-    //                 onTap: () => widget.controller.selected = index,
-    //               ),
-    //               left: 100 * (index % 3),
-    //               top: 100 * (index ~/ 3).toDouble(),
-    //             )),
-    //   ),
-    // );
   }
 }
