@@ -32,6 +32,7 @@ class KeyBoard extends StatelessWidget {
   }
 
   Widget body(BuildContext context) {
+    int a =1;
     return AspectRatio(
       aspectRatio: 1.5,
       child: Column(

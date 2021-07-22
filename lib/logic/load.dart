@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
 import 'choose.dart';
-import 'package:cactus33_helper/pb/model.pb.dart';
+import 'pb/model.pb.dart';
 import 'package:path_provider/path_provider.dart';
 
 late Map<int, int> positionChoose;

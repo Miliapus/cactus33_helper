@@ -1,4 +1,4 @@
-import 'package:cactus33_helper/pb/model.pbserver.dart';
+import 'pb/model.pb.dart';
 
 import 'define.dart';
 import 'basic_tool.dart';

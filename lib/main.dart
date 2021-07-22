@@ -1,9 +1,7 @@
-import 'package:cactus33_helper/logic/basic_tool.dart';
 import 'package:cactus33_helper/view/keyboard.dart';
 import 'package:cactus33_helper/view/number_map_widget.dart';
 
-import 'logic/choose.dart';
-import 'logic/load.dart';
+import 'logic/logic.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -87,11 +85,12 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               Expanded(
                   child: TextButton(
-                      onPressed: () => mapController.clear(),
+                      onPressed: () => setState(() => mapController.clear()),
                       child: Text("全部重置"))),
               Expanded(
                   child: TextButton(
-                      onPressed: () => mapController.update(null),
+                      onPressed: () =>
+                          setState(() => mapController.update(null)),
                       child: Text("重置")))
             ],
           ),
