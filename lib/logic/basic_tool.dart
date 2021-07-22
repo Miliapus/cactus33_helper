@@ -12,7 +12,11 @@ extension Hash on List<PointInfo> {
     return re;
   }
 }
-
+extension Convert on Map<int,int> {
+  List<PointInfo> get infoList =>entries
+      .map((e) => PointInfo(e.key, e.value))
+      .toList();
+}
 extension E on List<double> {
   void addValues(List<double> values, double p) {
     final l = length;
