@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mengjiaye.cactus33_helper">
    <application
-        android:label="cactus33_helper"
-        android:icon="@mipmap/ic_launcher">
+        android:label="仙人彩经"
+        android:icon="@mipmap/cactus33">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

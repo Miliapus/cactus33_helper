@@ -97,7 +97,8 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(
             height: 10,
           ),
-          Container(
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
             child: KeyBoard(
               absorbing: keyBoardAbsorbing,
               onNumberTap: (number) {
