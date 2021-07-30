@@ -25,6 +25,7 @@ dependencies:
   protobuf: ^2.0.0
   flutter:
     sdk: flutter
+  draw_oval: ^0.0.1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -35,6 +36,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+dependency_overrides:
+  draw_oval:
+    path: ./draw_oval
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
