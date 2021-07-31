@@ -1,6 +1,7 @@
 import 'package:cactus33_helper/logic/logic.dart';
 import 'package:flutter/material.dart';
 import 'package:draw_oval/draw_oval.dart';
+
 const t1 = 0.2;
 const t2 = 0.5;
 
@@ -24,18 +25,10 @@ class NextPainter extends CustomPainter {
       final offSet = size.centerOffset(nextPosition!);
       canvas.drawCircle(offSet, lineSize * 0.4, nextPaint);
     } else if (nextLine != null) {
-      final fromTo = nextLine!.fromTo;
-      final from = size.centerOffset(fromTo.from),
-          to = size.centerOffset(fromTo.to),
-          change = to - from,
-          middle = (from + to) / 2,
-          a = from - change * (t1 / 2),
-          b = to + change * (t1 / 2),
-          c = middle + change.orthogonal * (t2 / 2),
-          d = middle - change.orthogonal * (t2 / 2);
-      canvas.drawOvalWith(middle, 200,100,0.78,nextPaint);
-      canvas.drawLine(size.centerOffset(fromTo.from),
-          size.centerOffset(fromTo.to), nextPaint);
+      final fromTo = nextLine!.fromTo,
+          from = size.centerOffset(fromTo.from),
+          to = size.centerOffset(fromTo.to);
+      canvas.drawOvalBasedOnLine(from, to, 1.3, 3.3, nextPaint);
     }
   }
 
