@@ -14,9 +14,9 @@ Future<void> load() async {
 
   SendPort sender = await receive.first;
   final path = (await getApplicationSupportDirectory()).path;
-  final receive2 = ReceivePort();
-  sender.send([path,receive2.sendPort]);
-  Uint8List list = await receive2.first;
+  final dataReceivePort = ReceivePort();
+  sender.send([path,dataReceivePort.sendPort]);
+  Uint8List list = await dataReceivePort.first;
   print("receive finish");
   chooseCache = ChooseCache.fromBuffer(list);
   print("${chooseCache.lines.length} ${chooseCache.positions.length}");
@@ -27,7 +27,7 @@ void isolateEntryFunction(SendPort sendPort) async {
   sendPort.send(sender.sendPort);
   final List list = (await sender.first);
   String path = list.first;
-  SendPort sendPort2 = list.last;
+  SendPort dataSendPort = list.last;
   try {
     File file = File(path + "/data.txt");
     final exists =await file.exists();
@@ -35,13 +35,13 @@ void isolateEntryFunction(SendPort sendPort) async {
       final data = await file.readAsBytes();
       print("data length ${data.length}");
       print("read finish");
-      sendPort2.send(data);
+      dataSendPort.send(data);
     } else {
       chooseNext([]);
       final data = chooseCache.writeToBuffer();
       await file.create();
       await file.writeAsBytes(data);
-      sendPort2.send(data);
+      dataSendPort.send(data);
     }
   } catch (e) {
     print(e);
