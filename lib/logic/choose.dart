@@ -22,35 +22,33 @@ ChooseLine chooseLine(List<PointInfo> info) {
   });
   final max = e.max;
   final re = ChooseLine(
-      line: Line.values[max.index],
-      e: max.max,
+    line: Line.values[max.index],
+    e: max.max,
   );
   chooseCache.lines[key] = re;
   return re;
 }
 
 ChoosePosition chooseNext(List<PointInfo> info) {
-  final key = info.hash;
-  final cached = chooseCache.positions[key];
+  final key = info.hash, cached = chooseCache.positions[key];
   if (cached != null) {
     return cached;
   }
-  final otherPositions = List<int>.from(positions);
-  final otherNumbers = List<int>.from(numbers);
+  final otherPositions = List<int>.from(positions),
+      otherNumbers = List<int>.from(numbers);
   info.forEach((element) {
     otherPositions.remove(element.position);
     otherNumbers.remove(element.number);
   });
-  final unKnownCount = 9 - info.length;
-  final value = List.filled(unKnownCount, 0.0);
-  final fun = info.length == 3
-      ? (List<PointInfo> list) => chooseLine(list).e
-      : (List<PointInfo> list) => chooseNext(list).e;
+  final unKnownCount = 9 - info.length,
+      value = List.filled(unKnownCount, 0.0),
+      fun = info.length == 3
+          ? (List<PointInfo> list) => chooseLine(list).e
+          : (List<PointInfo> list) => chooseNext(list).e;
   for (var i = 0; i < unKnownCount; ++i) {
     otherNumbers.forEach((oneNumber) {
-      final next = PointInfo(otherPositions[i], oneNumber);
-      final infoWithNext = List<PointInfo>.from(info, growable: true)
-        ..add(next);
+      final next = PointInfo(otherPositions[i], oneNumber),
+          infoWithNext = List<PointInfo>.from(info, growable: true)..add(next);
       value[i] += fun(infoWithNext) / unKnownCount;
     });
     if (info.isEmpty) {
@@ -63,4 +61,25 @@ ChoosePosition chooseNext(List<PointInfo> info) {
   );
   chooseCache.positions[key] = re;
   return re;
+}
+
+extension PreChoose on ChooseCache {
+  Line? nextLineOf(Points points) {
+    final size = points.length;
+    switch (size) {
+      case 3:
+        final nextPosition = this.positions[points.hash]!.position,
+            has = points.map<int>((e) => e.number).toSet(),
+            nextLines = <Line>{};
+        numbers.where((number) => !has.contains(number)).forEach((element) {
+          nextLines.add(
+              lines[(points + [PointInfo(nextPosition, element)]).hash]!.line);
+        });
+        return nextLines.length == 1 ? nextLines.first : null;
+      case 4:
+        return lines[points.hash]!.line;
+      default:
+        return null;
+    }
+  }
 }

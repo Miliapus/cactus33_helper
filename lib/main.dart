@@ -24,16 +24,11 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   final NumberMapController mapController = NumberMapController((controller) {
-    controller.nextLine = null;
-    controller.nextPosition = null;
-
-    if (controller.info.length == 4) {
-      controller.nextLine =
-          chooseCache.lines[controller.info.infoList.hash]!.line;
-    } else if (controller.info.length > 0) {
-      controller.nextPosition =
-          chooseCache.positions[controller.info.infoList.hash]!.position;
-    }
+    final points = controller.info.infoList;
+    controller.nextLine = chooseCache.nextLineOf(points);
+    controller.nextPosition = controller.nextLine != null || points.isEmpty
+        ? null
+        : chooseCache.positions[controller.info.infoList.hash]?.position;
   });
 
   MyHomePage({Key? key}) : super(key: key);
@@ -72,40 +67,48 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget loading(BuildContext context) => Center(child: Text("loading"));
 
   Widget realBody(BuildContext context) {
-    final keyBoardAbsorbing =
-        selected == null || (info.length == 4 && !info.containsKey(selected));
+    final keyBoardAbsorbing = selected == null;
+    final forbid = info.length == 4 ? <int>{} : <int>{};
+    // if(mapController.nextLine != null)
+    //     (mapController.nextLine != null && !info.containsKey(selected));
     return Center(
       child: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: NumberMapWidget(mapController, () => setState(() {})),
+          Card(
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: NumberMapWidget(mapController, () => setState(() {})),
+            ),
           ),
-          Row(
-            children: [
-              Expanded(
-                  child: TextButton(
-                      onPressed: () => setState(() => mapController.clear()),
-                      child: Text("全部重置"))),
-              Expanded(
-                  child: TextButton(
-                      onPressed: () =>
-                          setState(() => mapController.update(null)),
-                      child: Text("重置")))
-            ],
+          Card(
+            child: Row(
+              children: [
+                Expanded(
+                    child: TextButton(
+                        onPressed: () => setState(() => mapController.clear()),
+                        child: Text("全部重置"))),
+                Expanded(
+                    child: TextButton(
+                        onPressed: () =>
+                            setState(() => mapController.update(null)),
+                        child: Text("重置")))
+              ],
+            ),
           ),
-          SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: KeyBoard(
-              absorbing: keyBoardAbsorbing,
-              onNumberTap: (number) {
-                mapController.update(number);
-                mapController.selected = mapController.nextPosition;
-              },
-              forbid: info.values.toList(),
+          Card(
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: KeyBoard(
+                absorbing: keyBoardAbsorbing,
+                onNumberTap: (number) {
+                  mapController.update(number);
+                  mapController.selected = mapController.nextPosition;
+                },
+                forbid: forbid,
+                unSuggest: mapController.nextLine != null
+                    ? info.values.toList()
+                    : info.values.toList(),
+              ),
             ),
           ),
         ],

@@ -23,7 +23,9 @@ class NumberMapController {
     _state.update();
   }
 
+///更新焦点位置的数字 如果这个数字在其他位置存在 那个位置将被重制
   void update(int? number) {
+    info.removeWhere((key, value) => value == number);
     if (number != null) {
       info[selected!] = number;
     } else {
@@ -66,9 +68,12 @@ class NumberMapWidgetState extends State<NumberMapWidget> {
     final index = 3 * row + column;
     return GestureDetector(
       child: Container(
-          color: index == controller.selected
-              ? Colors.lightBlueAccent
-              : Colors.grey,
+          decoration: BoxDecoration(
+            color: index == controller.selected
+                ? Colors.lightBlueAccent
+                : Colors.black12,
+            borderRadius: BorderRadius.all(Radius.circular(4.0)),
+          ),
           child: Center(
             child: Text(
               controller.info[index]?.toString() ?? "",

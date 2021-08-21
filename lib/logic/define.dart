@@ -39,3 +39,5 @@ class MaxOfList<T> {
   final int index;
   final T max;
 }
+
+typedef Points = List<PointInfo>;

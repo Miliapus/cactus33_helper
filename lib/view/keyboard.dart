@@ -5,24 +5,27 @@ class KeyBoard extends StatelessWidget {
   KeyBoard(
       {required this.onNumberTap,
       this.absorbing = false,
-      this.forbid = const []});
+      this.forbid = const {},
+      this.unSuggest = const {}});
 
-  final List<int> forbid;
+  final Iterable<int> forbid;
+  final Iterable<int> unSuggest;
   final bool absorbing;
   final ValueChanged<int> onNumberTap;
 
   Widget numberButton(int row, int column) {
     final number = 3 * row + column + 1;
-    final keyAbsorbing = forbid.contains(number);
+    final keyAbsorbing = forbid.contains(number) || absorbing;
+    final keyUnSuggested = unSuggest.contains(number);
     return AbsorbPointer(
-      absorbing: forbid.contains(number),
+      absorbing: keyAbsorbing,
       child: TextButton(
         onPressed: () => onNumberTap(number),
         child: Text(number.toString()),
         style: ButtonStyle(
           backgroundColor:  MaterialStateProperty.resolveWith(
                   (states) {
-                return keyAbsorbing ?Colors.grey.withAlpha(50) : Colors.greenAccent;
+                return keyUnSuggested || keyAbsorbing ?Colors.grey.withAlpha(50) : Colors.greenAccent;
               }),
           minimumSize:
               MaterialStateProperty.all(Size(double.infinity, double.infinity)),
