@@ -27,7 +27,7 @@ class MyHomePage extends StatefulWidget {
     controller.nextLine = chooseCache.nextLineOf(points);
     controller.nextPosition = controller.nextLine != null || points.isEmpty
         ? null
-        : chooseCache.positions[controller.info.infoList.hash]?.position;
+        : chooseCache.positions[controller.info.infoList.hashValue]?.position;
   });
 
   MyHomePage({Key? key}) : super(key: key);

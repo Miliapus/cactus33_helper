@@ -5,37 +5,34 @@ import 'basic_tool.dart';
 
 var chooseCache = ChooseCache();
 
-ChooseLine chooseLine(List<PointInfo> info) {
-  final key = info.hash;
-  final cached = chooseCache.lines[key];
+ChooseLine chooseLine(PointsInfo info) {
+  final key = info.hashValue, cached = chooseCache.lines[key];
   if (cached != null) {
     return cached;
   }
-  final other = List<int>.from(numbers, growable: true);
-  info.forEach((element) {
-    other.remove(element.number);
+  final other = numbers.copy
+    ..removeWhere(
+        (number) => info.any((pointInfo) => pointInfo.number == number));
+  final e = emptyAllMoneysInfoList();
+  other.allLists.forEach((element) {
+    e.addValues(info.mixWith(element).moneyByInfo
+      ..withRatio(1.0 / (5.0 * 4.0 * 3.0 * 2.0)));
   });
-  final e = List<double>.filled(8, 0.0);
-  allListsWith(other).forEach((element) {
-    e.addValues(
-        moneyByInfo(info.mixWith(element)), 1.0 / (5.0 * 4.0 * 3.0 * 2.0));
-  });
-  final max = e.max;
-  final re = ChooseLine(
-    line: Line.values[max.index],
-    e: max.max,
-  );
+  final max = e.max,
+      re = ChooseLine(
+        line: Line.values[max.index],
+        e: max.max,
+      );
   chooseCache.lines[key] = re;
   return re;
 }
 
-ChoosePosition chooseNext(List<PointInfo> info) {
-  final key = info.hash, cached = chooseCache.positions[key];
+ChoosePosition chooseNext(PointsInfo info) {
+  final key = info.hashValue, cached = chooseCache.positions[key];
   if (cached != null) {
     return cached;
   }
-  final otherPositions = List<int>.from(positions),
-      otherNumbers = List<int>.from(numbers);
+  final otherPositions = positions.copy, otherNumbers = numbers.copy;
   info.forEach((element) {
     otherPositions.remove(element.position);
     otherNumbers.remove(element.number);
@@ -48,12 +45,15 @@ ChoosePosition chooseNext(List<PointInfo> info) {
   for (var i = 0; i < unKnownCount; ++i) {
     otherNumbers.forEach((oneNumber) {
       final next = PointInfo(otherPositions[i], oneNumber),
-          infoWithNext = List<PointInfo>.from(info, growable: true)..add(next);
+          infoWithNext = info.copy..add(next);
       value[i] += fun(infoWithNext) / unKnownCount;
     });
-    if (info.isEmpty) {
-      print(value[i]);
-    }
+    assert(() {
+      if (info.isEmpty) {
+        print(value[i]);
+      }
+      return true;
+    }());
   }
   final re = ChoosePosition(
     position: otherPositions[value.max.index],
@@ -64,20 +64,20 @@ ChoosePosition chooseNext(List<PointInfo> info) {
 }
 
 extension PreChoose on ChooseCache {
-  Line? nextLineOf(Points points) {
+  Line? nextLineOf(PointsInfo points) {
     final size = points.length;
     switch (size) {
       case 3:
-        final nextPosition = this.positions[points.hash]!.position,
-            has = points.map<int>((e) => e.number).toSet(),
+        final nextPosition = this.positions[points.hashValue]!.position,
+            has = points.map((e) => e.number).toSet(),
             nextLines = <Line>{};
         numbers.where((number) => !has.contains(number)).forEach((element) {
           nextLines.add(
-              lines[(points + [PointInfo(nextPosition, element)]).hash]!.line);
+              lines[(points + [PointInfo(nextPosition, element)]).hashValue]!.line);
         });
-        return nextLines.length == 1 ? nextLines.first : null;
+        return nextLines.isNotEmpty ? nextLines.first : null;
       case 4:
-        return lines[points.hash]!.line;
+        return lines[points.hashValue]!.line;
       default:
         return null;
     }

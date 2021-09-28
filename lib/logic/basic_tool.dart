@@ -1,7 +1,7 @@
 import 'define.dart';
 
-extension Hash on List<PointInfo> {
-  int get hash {
+extension Hash on PointsInfo {
+  int get hashValue {
     var re = 0;
     map((e) => e.position * 10 + e.number).toList()
       ..sort()
@@ -12,21 +12,39 @@ extension Hash on List<PointInfo> {
     return re;
   }
 }
-extension Convert on Map<int,int> {
-  List<PointInfo> get infoList =>entries
-      .map((e) => PointInfo(e.key, e.value))
-      .toList();
+
+extension Convert on Map<int, int> {
+  PointsInfo get infoList =>
+      entries.map((e) => PointInfo(e.key, e.value)).toList();
 }
-extension E on List<double> {
-  void addValues(List<double> values, double p) {
+
+AllMoneysInfoList emptyAllMoneysInfoList() => AllMoneysInfoList.filled(8, 0);
+
+extension E on AllMoneysInfoList {
+  void withRatio(double ratio) {
     final l = length;
     for (var i = 0; i < l; ++i) {
-      this[i] += values[i] * p;
+      this[i] *= ratio;
+    }
+  }
+
+  void addValues(AllMoneysInfoList values) {
+    final l = length;
+    for (var i = 0; i < l; ++i) {
+      this[i] += values[i];
     }
   }
 }
 
-extension Find on List<double> {
+extension Copy<E> on List<E> {
+  copyWithout(E value) {
+    return copy..remove(value);
+  }
+
+  List<E> get copy => toList();
+}
+
+extension Find on AllMoneysInfoList {
   MaxOfList<double> get max {
     var maxValue = double.negativeInfinity, position = 0;
     final l = length;
@@ -40,21 +58,9 @@ extension Find on List<double> {
   }
 }
 
-List<double> moneyByInfo(List<int> info) {
-  final get = List.filled(8, 0);
-  get[0] = info.sumRow(0);
-  get[1] = info.sumRow(1);
-  get[2] = info.sumRow(2);
-  get[3] = info.sumColumn(0);
-  get[4] = info.sumColumn(1);
-  get[5] = info.sumColumn(2);
-  get[6] = info.sum00To22;
-  get[7] = info.sum02to20;
-  return get.map((e) => money[e]).toList();
-}
-
+//根据现有的位置-数字序列和一个数字序列生成完整的数字表，数字序列上的数字将被按顺序填充到表中空位
 extension Info on List<PointInfo> {
-  List<int> mixWith(List<int> other) {
+  AllPointsInfoList mixWith(List<int> other) {
     final re = List<int>.filled(9, 0);
     forEach((element) {
       re[element.position] = element.number;
@@ -69,30 +75,43 @@ extension Info on List<PointInfo> {
   }
 }
 
-extension Sum on List<int> {
-  int sumOf(int i1, int i2, int i3) {
-    return this[i1] + this[i2] + this[i3];
-  }
-
-  int sumRow(int row) => sumOf(3 * row, 3 * row + 1, 3 * row + 2);
-
-  int sumColumn(int column) => sumOf(column, column + 3, column + 6);
-
-  int get sum00To22 => sumOf(0, 4, 8);
-
-  int get sum02to20 => sumOf(2, 4, 6);
+extension MoneyOfValue on int {
+  double get money => moneyOfValue[this];
 }
 
-List<List<int>> allListsWith(List<int> list) {
-  if (list.length > 1) {
-    var re = List<List<int>>.empty(growable: true);
-    list.forEach((element) {
-      re.addAll(allListsWith(List.from(list)..remove(element))
-          .map((e) => e..add(element))
-          .toList());
-    });
-    return re;
-  } else {
-    return list.map((e) => List.filled(1, e, growable: true)).toList();
+extension Money on AllPointsInfoList {
+  List<double> get moneyByInfo {
+    int sumOf(int i1, int i2, int i3) => this[i1] + this[i2] + this[i3];
+    int sumRow(int row) => sumOf(3 * row, 3 * row + 1, 3 * row + 2);
+    int sumColumn(int column) => sumOf(column, column + 3, column + 6);
+    int sum00To22() => sumOf(0, 4, 8);
+    int sum02to20() => sumOf(2, 4, 6);
+    return [
+      sumRow(0).money,
+      sumRow(1).money,
+      sumRow(2).money,
+      sumColumn(0).money,
+      sumColumn(1).money,
+      sumColumn(2).money,
+      sum00To22().money,
+      sum02to20().money,
+    ];
+  }
+}
+
+extension Possible on List<int> {
+  List<List<int>> get allLists {
+    if (length > 1) {
+      final re = List<List<int>>.empty(growable: true);
+      forEach((element) {
+        re.addAll(copyWithout(element)
+            .allLists
+            .map((list) => list..add(element))
+            .toList());
+      });
+      return re;
+    } else {
+      return map((e) => List.filled(1, e, growable: true)).toList();
+    }
   }
 }

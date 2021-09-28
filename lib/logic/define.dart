@@ -1,7 +1,7 @@
 const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const positions = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-const money = <double>[
+const moneyOfValue = <double>[
   0.0,
   0.0,
   0.0,
@@ -40,4 +40,8 @@ class MaxOfList<T> {
   final T max;
 }
 
-typedef Points = List<PointInfo>;
+//每行的回报数据 顺序是 一二三行 一二三列 00到22 02到20
+typedef AllMoneysInfoList = List<double>;
+//完整的表，顺序是 00 01 02 10 11 12 20 21 22
+typedef AllPointsInfoList = List<int>;
+typedef PointsInfo = List<PointInfo>;
