@@ -1,59 +1,63 @@
+import 'points_info.dart';
+
 import 'pb/model.pb.dart';
 
 import 'define.dart';
 import 'basic_tool.dart';
 
+extension Choose on ChooseCache {
+  int? nextPositionOf(PointsInfo info) =>
+      this.positions[info.hashCode]?.position;
+
+  Line? nextLineOf(PointsInfo info) => this.lines[info.hashCode]?.line;
+}
+
 var chooseCache = ChooseCache();
 
+ChooseLine chooseLineWithoutCache(PointsInfo info) {
+  final other = info.numbersUnknown;
+  final e = emptyAllMoneysInfoList();
+  other.allLists.forEach((element) {
+    e.addValues(
+        (info + element).moneyByInfo..withRatio(1.0 / (5.0 * 4.0 * 3.0 * 2.0)));
+  });
+  final max = e.max;
+  return ChooseLine(
+    line: Line.values[max.index],
+    e: max.max,
+  );
+}
+
 ChooseLine chooseLine(PointsInfo info) {
-  final key = info.hashValue, cached = chooseCache.lines[key];
+  final key = info.hashCode, cached = chooseCache.lines[key];
   if (cached != null) {
     return cached;
   }
-  final other = numbers.copy
-    ..removeWhere(
-        (number) => info.any((pointInfo) => pointInfo.number == number));
-  final e = emptyAllMoneysInfoList();
-  other.allLists.forEach((element) {
-    e.addValues(info.mixWith(element).moneyByInfo
-      ..withRatio(1.0 / (5.0 * 4.0 * 3.0 * 2.0)));
-  });
-  final max = e.max,
-      re = ChooseLine(
-        line: Line.values[max.index],
-        e: max.max,
-      );
+  final re = chooseLineWithoutCache(info);
   chooseCache.lines[key] = re;
   return re;
 }
 
 ChoosePosition chooseNext(PointsInfo info) {
-  final key = info.hashValue, cached = chooseCache.positions[key];
+  final key = info.hashCode, cached = chooseCache.positions[key];
   if (cached != null) {
     return cached;
   }
   final otherPositions = positions.copy, otherNumbers = numbers.copy;
-  info.forEach((element) {
-    otherPositions.remove(element.position);
-    otherNumbers.remove(element.number);
+  info.forEachKnownIndexed((number, position) {
+    otherPositions.remove(position);
+    otherNumbers.remove(number);
   });
-  final unKnownCount = 9 - info.length,
+  final unKnownCount = 9 - info.knownCount,
       value = List.filled(unKnownCount, 0.0),
-      fun = info.length == 3
-          ? (List<PointInfo> list) => chooseLine(list).e
-          : (List<PointInfo> list) => chooseNext(list).e;
+      fun = unKnownCount == 6
+          ? (PointsInfo newInfo) => chooseLine(newInfo).e
+          : (PointsInfo newInfo) => chooseNext(newInfo).e;
   for (var i = 0; i < unKnownCount; ++i) {
     otherNumbers.forEach((oneNumber) {
-      final next = PointInfo(otherPositions[i], oneNumber),
-          infoWithNext = info.copy..add(next);
+      final infoWithNext = info.copySet(otherPositions[i], oneNumber);
       value[i] += fun(infoWithNext) / unKnownCount;
     });
-    assert(() {
-      if (info.isEmpty) {
-        print(value[i]);
-      }
-      return true;
-    }());
   }
   final re = ChoosePosition(
     position: otherPositions[value.max.index],
@@ -64,20 +68,23 @@ ChoosePosition chooseNext(PointsInfo info) {
 }
 
 extension PreChoose on ChooseCache {
-  Line? nextLineOf(PointsInfo points) {
-    final size = points.length;
+  Line? nextLineSmartOf(PointsInfo points) {
+    print(points.data);
+    print(points.hashCode);
+    print(points.hashCode.toRadixString(2));
+    final size = points.knownCount;
     switch (size) {
       case 3:
-        final nextPosition = this.positions[points.hashValue]!.position,
-            has = points.map((e) => e.number).toSet(),
+        final nextPosition = this.positions[points.hashCode]!.position,
+            has = points.data.toSet(),
             nextLines = <Line>{};
         numbers.where((number) => !has.contains(number)).forEach((element) {
           nextLines.add(
-              lines[(points + [PointInfo(nextPosition, element)]).hashValue]!.line);
+              nextLineOf(points.copySet(nextPosition, element))!);
         });
         return nextLines.isNotEmpty ? nextLines.first : null;
       case 4:
-        return lines[points.hashValue]!.line;
+        return lines[points.hashCode]!.line;
       default:
         return null;
     }

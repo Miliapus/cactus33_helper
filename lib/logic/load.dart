@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
+import 'package:cactus33_helper/logic/points_info.dart';
+
 import 'choose.dart';
 import 'pb/model.pb.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,7 +32,7 @@ void isolateEntryFunction(List sendPortAndPath) async {
       print("read finish");
       sendPort.send(data);
     } else {
-      chooseNext([]);
+      chooseNext(PointsInfo());
       final data = chooseCache.writeToBuffer();
       await file.create();
       await file.writeAsBytes(data);

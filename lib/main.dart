@@ -1,3 +1,4 @@
+import 'package:cactus33_helper/logic/points_info.dart';
 import 'package:cactus33_helper/view/keyboard.dart';
 import 'package:cactus33_helper/view/number_map_widget.dart';
 
@@ -23,11 +24,11 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   final NumberMapController mapController = NumberMapController((controller) {
-    final points = controller.info.infoList;
-    controller.nextLine = chooseCache.nextLineOf(points);
-    controller.nextPosition = controller.nextLine != null || points.isEmpty
+    final points = controller.info;
+    controller.nextLine = chooseCache.nextLineSmartOf(points);
+    controller.nextPosition = controller.nextLine != null || points.knownCount == 0
         ? null
-        : chooseCache.positions[controller.info.infoList.hashValue]?.position;
+        : chooseCache.positions[controller.info.hashCode]?.position;
   });
 
   MyHomePage({Key? key}) : super(key: key);
@@ -43,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int? get selected => mapController.selected;
 
-  Map<int, int> get info => mapController.info;
+  PointsInfo get info => mapController.info;
 
   @override
   void initState() {
@@ -67,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget realBody(BuildContext context) {
     final keyBoardAbsorbing = selected == null;
-    final forbid = info.length == 4 ? <int>{} : <int>{};
+    final forbid = info.knownCount == 4 ? <int>{} : <int>{};
     // if(mapController.nextLine != null)
     //     (mapController.nextLine != null && !info.containsKey(selected));
     return Center(
@@ -104,9 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   mapController.selected = mapController.nextPosition;
                 },
                 forbid: forbid,
-                unSuggest: mapController.nextLine != null
-                    ? info.values.toList()
-                    : info.values.toList(),
+                unSuggest: []
               ),
             ),
           ),

@@ -1,9 +1,11 @@
+import 'package:cactus33_helper/logic/points_info.dart';
+
 import 'next_painter.dart';
 import 'package:cactus33_helper/logic/logic.dart';
 import 'package:flutter/material.dart';
 
 class NumberMapController {
-  Map<int, int> info = {};
+  PointsInfo info = PointsInfo();
   late NumberMapWidgetState _state;
   int? _selected;
   int? nextPosition;
@@ -23,14 +25,9 @@ class NumberMapController {
     _state.update();
   }
 
-///更新焦点位置的数字 如果这个数字在其他位置存在 那个位置将被重制
+  ///更新焦点位置的数字 如果这个数字在其他位置存在 那个位置将被重制
   void update(int? number) {
-    info.removeWhere((key, value) => value == number);
-    if (number != null) {
-      info[selected!] = number;
-    } else {
-      info.remove(selected);
-    }
+    info.safeUpdate(selected!, number ?? 0);
     _onInfoChange();
   }
 
@@ -62,6 +59,11 @@ class NumberMapWidgetState extends State<NumberMapWidget> {
     controller._state = this;
   }
 
+  String text(int index) {
+    final value = controller.info[index];
+    return value == unKnownNumber ? '' : value.toString();
+  }
+
   void update() => setState(() {});
 
   Widget pointWidget(int row, int column) {
@@ -76,7 +78,7 @@ class NumberMapWidgetState extends State<NumberMapWidget> {
           ),
           child: Center(
             child: Text(
-              controller.info[index]?.toString() ?? "",
+              text(index),
               style: TextStyle(
                 fontSize: 25,
               ),

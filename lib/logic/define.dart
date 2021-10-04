@@ -1,3 +1,4 @@
+const unKnownNumber = 0;
 const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const positions = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -29,13 +30,9 @@ const moneyOfValue = <double>[
   3600.0,
 ];
 
-class PointInfo {
-  PointInfo(this.position, this.number);
-  final int position;
-  final int number;
-}
 class MaxOfList<T> {
   MaxOfList(this.index, this.max);
+
   final int index;
   final T max;
 }
@@ -44,4 +41,4 @@ class MaxOfList<T> {
 typedef AllMoneysInfoList = List<double>;
 //完整的表，顺序是 00 01 02 10 11 12 20 21 22
 typedef AllPointsInfoList = List<int>;
-typedef PointsInfo = List<PointInfo>;
+// typedef PointsInfo = List<PointInfo>;
