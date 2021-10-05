@@ -26,7 +26,6 @@ ChooseLine chooseLineWithoutCache(PointsInfo info) {
     line: Line.values[max.index],
     e: max.max,
   );
-
 }
 
 ChooseLine chooseLine(PointsInfo info) {
@@ -70,20 +69,14 @@ ChoosePosition chooseNext(PointsInfo info) {
 
 extension PreChoose on ChooseCache {
   Line? nextLineSmartOf(PointsInfo points) {
-    print(points.data);
-    print(points.hashCode);
-    print(points.hashCode.toRadixString(2));
-    final size = points.knownCount;
-    switch (size) {
+    switch (points.knownCount) {
       case 3:
         final nextPosition = this.positions[points.hashCode]!.position,
-            has = points.data.toSet(),
-            nextLines = <Line>{};
-        numbers.where((number) => !has.contains(number)).forEach((element) {
-          nextLines.add(
-              nextLineOf(points.copySet(nextPosition, element))!);
-        });
-        return nextLines.isNotEmpty ? nextLines.first : null;
+            nextLines = points.numbersUnknown
+                .map((number) =>
+                    nextLineOf(points.copySet(nextPosition, number))!)
+                .toSet();
+        return nextLines.length == 1 ? nextLines.first : null;
       case 4:
         return lines[points.hashCode]!.line;
       default:
