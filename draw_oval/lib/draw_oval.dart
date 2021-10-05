@@ -3,7 +3,7 @@ library draw_oval;
 import 'package:flutter/painting.dart';
 
 extension draw on Canvas {
-  drawOvalWith(
+  drawOvalWithSize(
       Offset center, double width, double height, double radians, Paint paint) {
     save();
     translate(center.dx, center.dy);
@@ -17,7 +17,7 @@ extension draw on Canvas {
   drawOvalBasedOnLine(Offset from, Offset to, double widthFactor,
       double aspectRatio, Paint paint) {
     final line = (to - from), d = line.distance, width = d * widthFactor;
-    drawOvalWith(
+    drawOvalWithSize(
         (from + to) / 2, width, width / aspectRatio, line.direction, paint);
   }
 }
