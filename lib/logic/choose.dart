@@ -26,6 +26,7 @@ ChooseLine chooseLineWithoutCache(PointsInfo info) {
     line: Line.values[max.index],
     e: max.max,
   );
+
 }
 
 ChooseLine chooseLine(PointsInfo info) {

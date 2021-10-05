@@ -26,9 +26,10 @@ class MyHomePage extends StatefulWidget {
   final NumberMapController mapController = NumberMapController((controller) {
     final points = controller.info;
     controller.nextLine = chooseCache.nextLineSmartOf(points);
-    controller.nextPosition = controller.nextLine != null || points.knownCount == 0
-        ? null
-        : chooseCache.positions[controller.info.hashCode]?.position;
+    controller.nextPosition =
+        controller.nextLine != null || points.knownCount == 0
+            ? null
+            : chooseCache.positions[controller.info.hashCode]?.position;
   });
 
   MyHomePage({Key? key}) : super(key: key);
@@ -67,10 +68,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget loading(BuildContext context) => Center(child: Text("loading"));
 
   Widget realBody(BuildContext context) {
-    final keyBoardAbsorbing = selected == null;
-    final forbid = info.knownCount == 4 ? <int>{} : <int>{};
-    // if(mapController.nextLine != null)
-    //     (mapController.nextLine != null && !info.containsKey(selected));
+    late bool keyBoardAbsorbing;
+    late Set<int> forbid;
+    if (selected != null) {
+      if (info.knownCount == 4) {
+        if(info)
+      }
+    } else {
+      keyBoardAbsorbing = true;
+      forbid = <int>{};
+    }
     return Center(
       child: Column(
         children: [
@@ -90,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                     child: TextButton(
                         onPressed: () =>
-                            setState(() => mapController.update(null)),
+                            setState(() => mapController.update(unKnownNumber)),
                         child: Text("重置")))
               ],
             ),
@@ -99,14 +106,13 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Padding(
               padding: EdgeInsets.all(10),
               child: KeyBoard(
-                absorbing: keyBoardAbsorbing,
-                onNumberTap: (number) {
-                  mapController.update(number);
-                  mapController.selected = mapController.nextPosition;
-                },
-                forbid: forbid,
-                unSuggest: []
-              ),
+                  absorbing: keyBoardAbsorbing,
+                  onNumberTap: (number) {
+                    mapController.update(number);
+                    mapController.selected = mapController.nextPosition;
+                  },
+                  forbid: forbid,
+                  unSuggest: []),
             ),
           ),
         ],

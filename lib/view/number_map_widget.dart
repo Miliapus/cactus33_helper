@@ -26,8 +26,8 @@ class NumberMapController {
   }
 
   ///更新焦点位置的数字 如果这个数字在其他位置存在 那个位置将被重制
-  void update(int? number) {
-    info.safeUpdate(selected!, number ?? 0);
+  void update(int number) {
+    info.safeUpdate(selected!, number);
     _onInfoChange();
   }
 
