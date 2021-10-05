@@ -68,16 +68,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget loading(BuildContext context) => Center(child: Text("loading"));
 
   Widget realBody(BuildContext context) {
-    late bool keyBoardAbsorbing;
-    late Set<int> forbid;
-    if (selected != null) {
-      if (info.knownCount == 4) {
-        if(info)
-      }
-    } else {
-      keyBoardAbsorbing = true;
-      forbid = <int>{};
-    }
+    final knownCount = info.knownCount,
+        keyBoardAbsorbing = selected == null,
+        forbid = selected != null &&
+                knownCount == 4 &&
+                info[selected!] == unKnownNumber
+            ? info.numbersUnknown.toSet()
+            : <int>{};
     return Center(
       child: Column(
         children: [
