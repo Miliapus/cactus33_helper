@@ -103,13 +103,13 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Padding(
               padding: EdgeInsets.all(10),
               child: KeyBoard(
-                  absorbing: keyBoardAbsorbing,
-                  onNumberTap: (number) {
-                    mapController.update(number);
-                    mapController.selected = mapController.nextPosition;
-                  },
-                  forbid: forbid,
-                  unSuggest: []),
+                absorbing: keyBoardAbsorbing,
+                onNumberTap: (number) {
+                  mapController.update(number);
+                  mapController.selected = mapController.nextPosition;
+                },
+                forbid: forbid,
+              ),
             ),
           ),
         ],
