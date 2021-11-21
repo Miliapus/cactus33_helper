@@ -1,4 +1,4 @@
-# 仙人微彩助手 Cactus33 Helper
+# 仙人彩经 Cactus33 Helper
 
 用于FF14 金碟游乐场 仙人微彩小游戏
 
