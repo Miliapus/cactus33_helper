@@ -1,6 +1,7 @@
 import 'package:cactus33_helper/logic/points_info.dart';
 import 'package:cactus33_helper/view/keyboard.dart';
 import 'package:cactus33_helper/view/number_map_widget.dart';
+import 'package:prepare_widget/prepare_widget.dart';
 
 import 'logic/logic.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +40,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool isPrepared = false;
-
   NumberMapController get mapController => widget.mapController;
 
   int? get selected => mapController.selected;
@@ -48,24 +47,19 @@ class _MyHomePageState extends State<MyHomePage> {
   PointsInfo get info => mapController.info;
 
   @override
-  void initState() {
-    super.initState();
-    load().then((_) => setState(() {
-          isPrepared = true;
-        }));
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Cactus33 Helper"),
-      ),
-      body: isPrepared ? realBody(context) : loading(context),
-    );
+        appBar: AppBar(
+          title: Text("Cactus33 Helper"),
+        ),
+        body: PrepareWidget(
+          loading: Center(child: Text("loading")),
+          builder: (BuildContext context) async {
+            await load();
+            return realBody(context);
+          },
+        ));
   }
-
-  Widget loading(BuildContext context) => Center(child: Text("loading"));
 
   Widget realBody(BuildContext context) {
     final knownCount = info.knownCount,
