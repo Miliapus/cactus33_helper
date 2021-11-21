@@ -1,16 +1,8 @@
-# cactus33_helper
+# 仙人微彩助手 Cactus33 Helper
 
-cactus33 helper for ff14 仙人微彩助手
+用于FF14 金碟游乐场 仙人微彩小游戏
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- 首次使用需要构建缓存（穷举计算，时间可能较长）
+- 仅在安卓平台上经过检验
+- IOS平台上请自行替换App名称和图标
+- 请自行打包
