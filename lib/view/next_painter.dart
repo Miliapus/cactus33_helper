@@ -5,39 +5,10 @@ import 'package:draw_oval/draw_oval.dart';
 const t1 = 0.2;
 const t2 = 0.5;
 
-class NextPainter extends CustomPainter {
-  int? nextPosition;
-  Line? nextLine;
-  final nextPaint = Paint()
-    ..strokeWidth = 5.0
-    ..style = PaintingStyle.stroke
-    ..color = Colors.red;
+mixin GridCenterProvider {
+  double get interval;
 
-  NextPainter({
-    this.nextLine,
-    this.nextPosition,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final lineSize = (size.width - 20) / 3;
-    if (nextPosition != null) {
-      final offSet = size.centerOffset(nextPosition!);
-      canvas.drawCircle(offSet, lineSize * 0.4, nextPaint);
-    } else if (nextLine != null) {
-      final fromTo = nextLine!.fromTo,
-          from = size.centerOffset(fromTo.from),
-          to = size.centerOffset(fromTo.to);
-      canvas.drawOvalBasedOnLine(from, to, 1.3, 3.3, nextPaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
-
-extension Position on Size {
-  Offset centerOffset(int position) {
+  Offset centerOffset(int position, double width) {
     final oneSize = (width - 2 * 10) / 3,
         row = position ~/ 3,
         column = position % 3;
@@ -46,8 +17,75 @@ extension Position on Size {
   }
 }
 
-extension Math on Offset {
-  Offset get orthogonal => Offset(dy, -dx);
+class NextShowWidget extends StatelessWidget {
+  final double interval;
+
+  final Widget? child;
+
+  final int? nextPosition;
+
+  final Line? nextLine;
+
+  const NextShowWidget(
+      {Key? key,
+      this.child,
+      this.nextPosition,
+      this.nextLine,
+      this.interval = 0})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: CustomPaint(
+        child: child,
+        foregroundPainter: NextPainter(
+          interval: interval,
+          nextLine: nextLine,
+          nextPosition: nextPosition,
+        ),
+      ),
+    );
+  }
+}
+
+class NextPainter extends CustomPainter with GridCenterProvider {
+  @override
+  final double interval;
+
+  int? nextPosition;
+
+  Line? nextLine;
+
+  final nextPaint = Paint()
+    ..strokeWidth = 5.0
+    ..style = PaintingStyle.stroke
+    ..color = Colors.red;
+
+  NextPainter({
+    this.interval = 0,
+    this.nextLine,
+    this.nextPosition,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final lineSize = (size.width - 20) / 3;
+    if (nextPosition != null) {
+      final offSet = centerOffset(nextPosition!, size.width);
+      canvas.drawCircle(offSet, lineSize * 0.4, nextPaint);
+    }
+    if (nextLine != null) {
+      final fromTo = nextLine!.fromTo,
+          from = centerOffset(fromTo.from, size.width),
+          to = centerOffset(fromTo.to, size.width);
+      canvas.drawOvalBasedOnLine(from, to, 1.3, 3.3, nextPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
 class FromTo {

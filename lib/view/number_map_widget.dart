@@ -1,4 +1,7 @@
+import 'dart:js';
+
 import 'package:cactus33_helper/logic/points_info.dart';
+import 'package:cactus33_helper/view/number_cell.dart';
 
 import 'next_painter.dart';
 import 'package:cactus33_helper/logic/logic.dart';
@@ -69,54 +72,39 @@ class NumberMapWidgetState extends State<NumberMapWidget> {
   Widget pointWidget(int row, int column) {
     final index = 3 * row + column;
     return GestureDetector(
-      child: Container(
-          decoration: BoxDecoration(
-            color: index == controller.selected
-                ? Colors.lightBlueAccent
-                : Colors.black12,
-            borderRadius: BorderRadius.all(Radius.circular(4.0)),
-          ),
-          child: Center(
-            child: Text(
-              text(index),
-              style: TextStyle(
-                fontSize: 25,
-              ),
-            ),
-          )),
+      child: NumberCell(
+        number: text(index),
+        focused: controller.selected == index,
+      ),
       onTap: () => controller.selected = index,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1,
-      child: CustomPaint(
-        child: Column(
-          children: List.generate(
-            5,
-            (row) => row % 2 == 0
-                ? Expanded(
-                    child: Row(
-                      children: List.generate(
-                        5,
-                        (column) => column % 2 == 0
-                            ? Expanded(
-                                child: Center(
-                                  child: pointWidget(row ~/ 2, column ~/ 2),
-                                ),
-                              )
-                            : SizedBox(width: 10),
-                      ),
+    return NextShowWidget(
+      interval: 10,
+      nextLine: controller.nextLine,
+      nextPosition: controller.nextPosition,
+      child: Column(
+        children: List.generate(
+          5,
+          (row) => row % 2 == 0
+              ? Expanded(
+                  child: Row(
+                    children: List.generate(
+                      5,
+                      (column) => column % 2 == 0
+                          ? Expanded(
+                              child: Center(
+                                child: pointWidget(row ~/ 2, column ~/ 2),
+                              ),
+                            )
+                          : SizedBox(width: 10),
                     ),
-                  )
-                : SizedBox(height: 10),
-          ),
-        ),
-        foregroundPainter: NextPainter(
-          nextLine: controller.nextLine,
-          nextPosition: controller.nextPosition,
+                  ),
+                )
+              : SizedBox(height: 10),
         ),
       ),
     );
