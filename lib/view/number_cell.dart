@@ -16,7 +16,7 @@ class NumberCell extends StatelessWidget {
     if (focused) {
       backgroundColor = Colors.lightBlueAccent;
     } else {
-      backgroundColor = Colors.transparent;
+      backgroundColor = Colors.black12;
     }
     return Container(
         decoration: BoxDecoration(

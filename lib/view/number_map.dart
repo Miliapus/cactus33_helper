@@ -23,26 +23,28 @@ mixin NumberGridBuilder {
 class NumberMap extends StatelessWidget with NumberGridBuilder {
   final int? focused;
   final List<int?> numbers;
-
+  final ValueChanged<int>? onTap;
   @override
   final double interval = 10;
 
-  NumberMap({Key? key, required this.numbers, this.focused})
+  NumberMap({Key? key, required this.numbers, this.focused, this.onTap})
       : assert(numbers.length == 9);
 
   NumberMap.fromMap(
       {Key? key, required Map<int, int> mapTypeInfo, int? focused})
       : this(key: key, numbers: mapTypeInfo.listTypeNumbers, focused: focused);
 
-  Widget pointWidget(int index) {
-    return GestureDetector(
-      child: NumberCell(
-        number: numbers[index]?.toString() ?? "",
-        focused: index == focused,
-      ),
-      onTap: () => {},
-    );
-  }
+  Widget pointWidget(int index) => GestureDetector(
+        child: NumberCell(
+          number: numbers[index]?.toString() ?? "",
+          focused: index == focused,
+        ),
+        onTap: () {
+          if (onTap != null) {
+            this.onTap!(index);
+          }
+        },
+      );
 
   @override
   Widget build(BuildContext context) {

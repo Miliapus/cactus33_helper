@@ -56,12 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
           loading: Center(child: Text("loading")),
           builder: (BuildContext context) async {
             await load();
-            return realBody(context);
+            return StatefulBuilder(builder: realBody);
           },
         ));
   }
 
-  Widget realBody(BuildContext context) {
+  Widget realBody(BuildContext context,StateSetter setState) {
     final knownCount = info.knownCount,
         keyBoardAbsorbing = selected == null,
         forbid = selected != null &&
@@ -75,7 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
           Card(
             child: Padding(
               padding: EdgeInsets.all(10),
-              child: NumberMapWidget(mapController, () => setState(() {})),
+              child: NumberMapWidget(mapController, () => setState(() {
+
+              })),
             ),
           ),
           Card(
