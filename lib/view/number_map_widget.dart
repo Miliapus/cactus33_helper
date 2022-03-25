@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:cactus33_helper/logic/points_info.dart';
 import 'package:cactus33_helper/view/number_cell.dart';
 
