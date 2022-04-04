@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
-  Widget realBody(BuildContext context,StateSetter setState) {
+  Widget realBody(BuildContext context, StateSetter setState) {
     final knownCount = info.knownCount,
         keyBoardAbsorbing = selected == null,
         forbid = selected != null &&
@@ -75,9 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Card(
             child: Padding(
               padding: EdgeInsets.all(10),
-              child: NumberMapWidget(mapController, () => setState(() {
-
-              })),
+              child: NumberMapWidget(mapController, () => setState(() {})),
             ),
           ),
           Card(
@@ -95,19 +93,23 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
           ),
-          Card(
+          Expanded(
             child: Padding(
-              padding: EdgeInsets.all(10),
-              child: KeyBoard(
-                absorbing: keyBoardAbsorbing,
-                onNumberTap: (number) {
-                  mapController.update(number);
-                  mapController.selected = mapController.nextPosition;
-                },
-                forbid: forbid,
+              padding: EdgeInsets.only(bottom: 10),
+              child: Card(
+                child: Padding(
+                    padding: EdgeInsets.all(10),
+                      child: KeyBoard(
+                        absorbing: keyBoardAbsorbing,
+                        onNumberTap: (number) {
+                          mapController.update(number);
+                          mapController.selected = mapController.nextPosition;
+                        },
+                        forbid: forbid,
+                      ),),
               ),
             ),
-          ),
+          )
         ],
       ),
     );

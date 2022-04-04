@@ -12,8 +12,7 @@ class KeyBoard extends StatelessWidget {
   final bool absorbing;
   final ValueChanged<int> onNumberTap;
 
-  Widget numberButton(int row, int column) {
-    final number = 3 * row + column + 1;
+  Widget numberButton(int number) {
     final keyAbsorbing = forbid.contains(number) || absorbing;
     final keyUnSuggested = unSuggest.contains(number);
     return AbsorbPointer(
@@ -22,10 +21,11 @@ class KeyBoard extends StatelessWidget {
         onPressed: () => onNumberTap(number),
         child: Text(number.toString()),
         style: ButtonStyle(
-          backgroundColor:  MaterialStateProperty.resolveWith(
-                  (states) {
-                return keyUnSuggested || keyAbsorbing ?Colors.grey.withAlpha(50) : Colors.greenAccent;
-              }),
+          backgroundColor: MaterialStateProperty.resolveWith((states) {
+            return keyUnSuggested || keyAbsorbing
+                ? Colors.grey.withAlpha(50)
+                : Colors.greenAccent;
+          }),
           minimumSize:
               MaterialStateProperty.all(Size(double.infinity, double.infinity)),
         ),
@@ -33,34 +33,29 @@ class KeyBoard extends StatelessWidget {
     );
   }
 
-  Widget body(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.5,
-      child: Column(
-        children: List.generate(
-          5,
-          (row) => row % 2 == 0
-              ? Expanded(
-                  child: Row(
-                    children: List.generate(
-                      5,
-                      (column) => column % 2 == 0
-                          ? Expanded(
-                              child: Center(
-                                child: numberButton(row ~/ 2, column ~/ 2),
-                              ),
-                            )
-                          : SizedBox(
-                              width: 10,
-                            ),
-                    ),
-                  ),
-                )
-              : SizedBox(
-                  height: 10,
-                ),
+  Widget buildGrid(BuildContext context) {
+    Widget buildRow(int a, int b, int c) {
+      return Expanded(
+        child: Row(
+          children: [
+            Expanded(child: numberButton(a)),
+            SizedBox(width: 10),
+            Expanded(child: numberButton(b)),
+            SizedBox(width: 10),
+            Expanded(child: numberButton(c)),
+          ],
         ),
-      ),
+      );
+    }
+
+    return Column(
+      children: [
+        buildRow(1, 2, 3),
+        SizedBox(height: 10),
+        buildRow(4, 5, 6),
+        SizedBox(height: 10),
+        buildRow(7, 8, 9),
+      ],
     );
   }
 
@@ -68,7 +63,7 @@ class KeyBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AbsorbPointer(
       absorbing: absorbing,
-      child: body(context),
+      child: buildGrid(context),
     );
   }
 }
