@@ -13,6 +13,7 @@ late Map<int, int> lineChoose;
 Future<void> load() async {
   final receive = ReceivePort();
   final path = (await getApplicationSupportDirectory()).path;
+  print(path);
   await Isolate.spawn(isolateEntryFunction, [receive.sendPort,path]);
   Uint8List list = await receive.first;
   print("receive finish");
